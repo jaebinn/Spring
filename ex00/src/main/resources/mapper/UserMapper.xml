@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.UserMapper">
+	<insert id="insertUser">
+		insert into s_user values(#{id},#{name},#{age},now())
+	</insert>
+	<select id="getUserById">
+		select * from s_user where id = #{id}
+	</select>
+	<delete id="deleteUser">
+		delete from s_user where id = #{id}
+	</delete>
+</mapper>

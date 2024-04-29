@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace 는 Mapper 인터페이스의 경로를 그대로 써준다. -->
+<mapper namespace="com.example.demo.mapper.TimeMapper">
+	<!-- id 속성 값은 쿼리를 사용할 때 호출할 메소드의 이름과 동일하게 맞추어야 한다. -->
+	<select id="getTime2">
+		select now() from dual
+	</select>
+	
+</mapper>

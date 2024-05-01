@@ -31,7 +31,6 @@ public class SampleController {
 		System.out.println("========POST 방식으로 요청========");
 		System.out.println("age : "+age);
 	}
-	
 }
 
 

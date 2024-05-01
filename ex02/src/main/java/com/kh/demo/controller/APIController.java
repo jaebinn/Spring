@@ -21,7 +21,7 @@ public class APIController {
 	public void replace() {}
 	
 	@PostMapping(value = "get", produces = "application/json;charset=utf-8")
-	@ResponseBody
+	@ResponseBody //get클라이언트로 보내기
 	public String getData(String sidoName) throws Exception {
 		//공공데이터포탈과 통신
 		String url = "https://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty?serviceKey="+serviceKey;

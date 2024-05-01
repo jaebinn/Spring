@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>최종 예제 게시판</title>
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="login">
+	<th:block th:if="${session.loginUser != null}">
+		<script>
+			location.replace("/board/list")
+		</script>
+	</th:block>
+	<div id="wrap" class="login">
+		<form action="/user/login" method="post" name="loginForm">
+			<table>
+				<tbody>
+					<tr>
+						<th>아이디</th>
+						<td>
+							<input type="text" name="userid" th:value="${joinid}">
+						</td>
+					</tr>
+					<tr>
+						<th>비밀번호</th>
+						<td>
+							<input type="password" name="userpw">
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							<div class="btn_area">
+								<input type="submit" value="로그인">
+								<a class="btn" href="/user/join">회원가입</a>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</form>
+	</div>
+	<img alt="" src="/images/타이틀.png">
+</body>
+<th:block th:if="${joinid != null}">
+	<script th:inline="javascript">
+		window.setTimeout(function(){
+			let joinid = /*[[${joinid}]]*/'';
+			alert(`${joinid}님 가입을 환영합니다~`);
+			document.loginForm.userid.value = joinid;
+			document.loginForm.userpw.focus();
+		},1300)
+	</script>
+</th:block>
+<script>
+	window.setTimeout(function(){
+		document.querySelector("#wrap.login+img").classList = "hdd";
+		document.querySelector("#wrap.login").style.display = "block";
+	},1300)
+</script>
+</html>

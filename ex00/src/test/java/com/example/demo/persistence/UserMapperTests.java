@@ -11,7 +11,7 @@ import com.example.demo.domain.UserDTO;
 import com.example.demo.mapper.UserMapper;
 
 @MybatisTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) //DB에 삽입안할려고, 없으면 삽입가능
 public class UserMapperTests {
 	@Autowired
 	private UserMapper mapper;

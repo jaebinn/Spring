@@ -21,7 +21,7 @@ public class UserMapperTests {
 		assertNotNull(mapper);
 	}
 	
-	@Test
+//	@Test
 	public void insertUserTest() {
 		UserDTO user = new UserDTO();
 		user.setUserid("testid");
@@ -29,16 +29,13 @@ public class UserMapperTests {
 		user.setUsername("testname");
 		user.setUsergender("IVE");
 		user.setZipcode("testzipcode");
-		user.setAddr("testaddr");
 		user.setAddrdetail("testaddrdetail");
-		user.setAddretc("testaddretc");
-		user.setUserhobby("testhobby");
 		
-		boolean result = mapper.insertUser(user) == 1;	
+		boolean result = mapper.insertUser(user) == 1;
 		System.out.println("RESULT : "+result);
 	}
 	
-//	@Test
+	@Test
 	public void getUserByIdTest() {
 		UserDTO	user = mapper.getUserById("testid");
 		System.out.println("RESULT : "+user);

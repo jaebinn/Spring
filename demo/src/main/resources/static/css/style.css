@@ -399,6 +399,8 @@ a.btn {
 	color: #fff;
 	font-weight: bold;
 	text-decoration: none;
+	width:100px; height:40px;
+	cursor: pointer;
 }
 .btn_table{
 	text-align: right;
@@ -535,7 +537,7 @@ a.write {
     border: 2px solid rgb(0, 200, 80);
     outline: none;
     position: relative;
-    top: -1px;
+    top: -2.5px;
 }
 
 .search_area #keyword {
@@ -545,10 +547,10 @@ a.write {
     width: 300px; height: 40px;
     padding: 10px;
     position: relative;
-    top: -1.5px;
+    top: -3px;
 }
 
-.search_area [type=button] {
+.search_area #search-btn {
 	background-color: rgb(0, 200, 80);
 	width: 70px;
 	padding: 10px;
@@ -882,6 +884,10 @@ a.write {
 	resize:none;
 	width:700px; height:290px;
 }
+.write form [class*=cont] a.btn, .modify form [class*=cont] a.btn{
+	width:fit-content; height:fit-content;
+}
+
 img.thumbnail{
 	display: block;
 	width:200px;

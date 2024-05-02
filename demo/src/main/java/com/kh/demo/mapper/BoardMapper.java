@@ -9,6 +9,9 @@ import com.kh.demo.domain.dto.Criteria;
 
 @Mapper
 public interface BoardMapper {
+	//insert
+	int insertBoard(BoardDTO board);
+	
 	List<BoardDTO> getList(Criteria cri);
 	long getTotal(Criteria cri);
 	long getLastNum(String userid);

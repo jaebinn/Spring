@@ -1,31 +1,32 @@
 <th:block th:fragment="header(loginUser)">
 	<th:block th:if="${loginUser == null}">
-	      <script>
-	         alert("로그인 후 이용하세요!");
-	         location.replace("/");
-	      </script>
+		<script>
+			alert("로그인 후 이용하세요!");
+			location.replace("/");
+		</script>
 	</th:block>
 	<div></div>
-	     <!-- 로그아웃 버튼 배치할 테이블 -->
-	     <table class="header_area">
-	        <tbody>
-	           <tr>
-	              <td>
-	                 <span>[[${loginUser}]]님 환영합니다.</span>
-	                 <a class="btn" href="/user/logout">로그아웃</a>
-	              </td>
-	           </tr>
-	        </tbody>
-	     </table>
-		 <table class="title">
-		          <tbody>
-		             <tr>
-		                <td>
-		                   <h3>
-		                      <img src="/images/타이틀.png" class="tit_img">
-		                   </h3>
-		                </td>
-		             </tr>
-		          </tbody>
-		       </table>
+	<!-- 로그아웃 버튼 배치할 테이블 -->
+	<table class="header_area">
+		<tbody>
+			<tr>
+				<td>
+					<span>[[${loginUser}]]님 환영합니다.</span>
+					<a class="btn" href="/user/logout">로그아웃</a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<!-- 타이틀 띄워주는 테이블 -->
+	<table class="title">
+		<tbody>
+			<tr>
+				<td>
+					<h3>
+						<img src="/images/타이틀.png" class="tit_img">
+					</h3>
+				</td>
+			</tr>
+		</tbody>
+	</table>
 </th:block>

@@ -22,6 +22,12 @@ create table t_board(
     readcount bigint default 0,
     userid varchar(300)
 );
+insert into t_board (boardtitle,boardcontents,userid) values('테스트 제목1','테스트 내용1','apple');
+insert into t_board (boardtitle,boardcontents,userid) values('테스트 제목2','테스트 내용2','banana');
+insert into t_board (boardtitle,boardcontents,userid) values('테스트 제목3','테스트 내용3','cherry');
+insert into t_board (boardtitle,boardcontents,userid) values('테스트 제목4','테스트 내용4','durian');
+
+insert into t_board (boardtitle,boardcontents,userid) (select boardtitle, boardcontents, userid from t_board);
 
 drop table t_file;
 create table t_file(

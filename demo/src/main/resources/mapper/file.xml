@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+	//R
+	FileDTO getFileBySystemname(String systemname);
+	List<FileDTO> getFiles(long boardnum);
+	//D
+	int deleteFileBySystemname(String systemname);
+	int deleteFilesByBoardnum(long boardnum);
+
+-->
+<mapper namespace="com.kh.demo.mapper.FileMapper">
+	<insert id="insertFile">
+		insert into t_file values(#{systemname},#{orgname},#{boardnum})
+	</insert>
+	
+</mapper>
+
+

@@ -24,3 +24,9 @@ public interface BoardService {
 	boolean remove(long boardnum);
 	
 }
+
+
+
+
+
+

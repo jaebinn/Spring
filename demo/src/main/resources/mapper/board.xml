@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kh.demo.mapper.UserMapper">
+	<sql id="cri">
+		<if test="keyword != '' and type != ''">
+			<trim prefixOverrides="or" prefix="(" suffix=") and">
+				<foreach collection="typeArr" item="type">
+					or
+					<choose>
+						<when test="type == 'T'.toString()">
+							boardtitle like('%${keyword}%')
+						</when>
+						<when test="type == 'C'.toString()">
+							boardcontents like('%${keyword}%')
+						</when>
+						<when test="type == 'W'.toString()">
+							userid like('%${keyword}%')
+						</when>
+					</choose>			
+				</foreach>
+			</trim>
+		</if>
+	</sql>
+	
+	<select id="getList">
+		select * from t_board where
+		<include refid="cri"></include>
+		boardnum > 0 order by boardnum desc limit(#startrow},#{amount})
+	</select>
+	<select id="getTotal">
+		select count(*) from t_board where
+		<include refid="cri"></include>
+		boardnum > 0
+	</select>
+	<select id="getLastNum">
+		select max(boardnum) from t_board where userid=#{userid}
+	</select>
+	<select id="getBoardByNum">
+		select * from t_board where boardnum=#{boardnum}
+	</select>
+</mapper>

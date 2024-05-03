@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>get</title>
+<link href="/css/style.css" rel="stylesheet">
+</head>
+<body class="get">
+	<div id="wrap" class="get">
+		<th:block th:replace="~{layout/header::header(${session.loginUser})}"></th:block>
+		<table border="1" class="board_area">
+			<tr>
+				<th>제목</th>
+				<td id="boardtitle">[[${board.boardtitle}]]</td>
+			</tr>
+			<tr>
+				<th>작성자</th>
+				<td id="userid">[[${board.userid}]]</td>
+			</tr>
+			<tr>
+				<th>조회수</th>
+				<td id="readcount">[[${board.readcount}]]</td>
+			</tr>
+			<tr>
+				<th>내용</th>
+				<td id="boardcontents">[[${board.boardcontents}]]</td>
+			</tr>
+			<th:block th:if="${files != null and files.size()>0 }" th:each="file:${files}">
+				<!-- th:with - 일종의 변수 선언, 해당하는 블럭 내에서 sar 이라는 이름으로 대입한 것을 사용 가능(.으로 split한 배열) -->
+				<th:block th:with="sar=${file.orgname.split('[.]')}">
+					<tr>
+						<th>첨부파일[[${fileStat.index+1}]]</th>
+						<td>
+							<a th:href="@{/file/download (systemname=${file.systemname}, orgname=${file.orgname})}">[[${file.orgname}]]</a>
+						</td>
+					</tr>
+					<!-- sar 배열의 가장 마지막 방(파일의 확장자) -->
+					<th:block th:with="ext=${sar[sar.length-1]}">
+						<!-- 썸네일 제작 -->
+						<tr th:if="${ext == 'jpeg' or ext == 'jpg' or ext == 'png' or ext == 'gif' or ext == 'webp' }">
+							<th></th>
+							<td>
+								<img class="thumbnail" th:src="${'/file/thumbnail?systemname='+file.systemname}">
+							</td>
+						</tr>
+					</th:block>
+				</th:block>
+			</th:block>
+			<th:block th:unless="${files != null and files.size()>0 }">
+				<tr class="no-file">
+					<td colspan="2">첨부 파일이 없습니다.</td>
+				</tr>
+			</th:block>
+		</table>
+		<table class="btn_area">
+			<tbody>
+				<tr>
+					<td>
+						<th:block th:if="${board.userid == session.loginUser}">
+							<a class="btn" th:href="${'/board/modify'+cri.listLink+'&boardnum='+board.boardnum}">수정</a>
+							<a class="btn" th:href="${'/board/remove'+cri.listLink+'&boardnum='+board.boardnum}">삭제</a>
+						</th:block>
+						<a class="btn" th:href="${'/board/list'+cri.listLink}">목록</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="reply_line">
+			<a href="#" class="btn regist">댓글 등록</a>
+			<div class="replyForm row" style="display: none;">
+				<div>
+					<h4>작성자</h4>
+					<input type="text" name="userid" th:value="${session.loginUser}" readonly>
+				</div>
+				<div>
+					<h4>내 용</h4>
+					<textarea name="replycontents" placeholder="Contents"></textarea>
+				</div>
+				<div>
+					<a href="#" class="btn finish">등록</a>
+					<a href="#" class="btn cancel">취소</a>
+				</div>
+			</div>
+			<ul class="replies"></ul>
+			<div class="page"></div>
+		</div>
+	</div>
+</body>
+<script>
+	window.setTimeout(function(){
+		document.querySelector("#wrap>div:nth-child(1)").style.display="none";
+	},1200)
+	const updateForm = document.updateForm;
+	let flag = false;
+	function deleteReply(replynum){
+		updateForm.setAttribute("action","${cp}/reply/delete");
+		updateForm.replynum.value = replynum;
+		updateForm.submit();
+	}
+	function updateReply(i){
+		const start = document.getElementById("start"+i);
+		const end = document.getElementById("end"+i);
+		const reply = document.getElementById("reply"+i);
+		
+		if(!flag){
+			start.style.display = "none";
+			end.style.display = "inline-block";
+			reply.removeAttribute("readonly");
+			flag = true;
+		}
+		else{
+			alert("수정중인 댓글이 있습니다!");
+		}
+	}
+	function updateReplyOk(i,replynum){
+		updateForm.setAttribute("action","${cp}/reply/update");
+		updateForm.replynum.value = replynum;
+		updateForm.i.value = i;
+		updateForm.submit();
+	}
+</script>
+</html>
+
+
+
+
+
+
+
+
+

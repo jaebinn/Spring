@@ -15,7 +15,10 @@
 	<insert id="insertFile">
 		insert into t_file values(#{systemname},#{orgname},#{boardnum})
 	</insert>
-	
+		
+	<select id="getFiles">
+		select * from t_file where boardnum = #{boardnum} 
+	</select>
 </mapper>
 
 

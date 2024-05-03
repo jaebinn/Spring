@@ -85,10 +85,14 @@ public class BoardServiceImpl implements BoardService{
 
 	@Override
 	public BoardDTO getDetail(long boardnum) {
-		// TODO Auto-generated method stub
-		return null;
+		return bmapper.getBoardByNum(boardnum);
 	}
 
+	@Override
+	public List<FileDTO> getFiles(long boardnum) {
+		return fmapper.getFiles(boardnum);
+	}
+	
 	@Override
 	public List<BoardDTO> getList(Criteria cri) {
 		return bmapper.getList(cri);

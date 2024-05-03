@@ -128,14 +128,87 @@ public class BoardServiceImpl implements BoardService{
 
 	@Override
 	public boolean modify(BoardDTO board, MultipartFile[] files, String updateCnt) throws Exception {
-		// TODO Auto-generated method stub
-		return false;
+		if(bmapper.updateBoard(board) != 1) {
+			return false;
+		}
+		List<FileDTO> orgFileList = fmapper.getFiles(board.getBoardnum());
+		if(orgFileList.size() == 0 && (files == null || files.length == 0)) {
+			return true;
+		}
+		else {
+			System.out.println("service : "+files.length);
+			if(files != null && files.length != 0) {
+				boolean flag = false;
+				//후에 비즈니스 로직 실패 시 원래대로 복구하기 위해 업로드 성공했던 파일들도 삭제해 주어야 한다.
+				//업로드 성공한 파일들의 이름을 해당 리스트에 추가하면서 로직을 진행한다.
+				ArrayList<String> sysnames = new ArrayList<>();
+				for(int i=0;i<files.length-1;i++) {
+					MultipartFile file = files[i];
+					String orgname = file.getOriginalFilename();
+					//수정의 경우 중간에 있는 파일이 수정되지 않은 경우도 있다.
+					//그런 경우의 file의 orgname은 null이거나 "" 이다.
+					//따라서 파일 처리를 할 필요가 없으므로 반복문을 넘어간다.
+					if(orgname == null || orgname.equals("")) {
+						continue;
+					}
+					//파일 업로드 과정(regist와 동일)
+					int lastIdx = orgname.lastIndexOf(".");
+					String extension = orgname.substring(lastIdx);
+					LocalDateTime now = LocalDateTime.now();
+					String time = now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS"));
+					String systemname = time+UUID.randomUUID().toString()+extension;
+					
+					String path = saveFolder+systemname;
+					
+					//File DB 저장
+					FileDTO fdto = new FileDTO();
+					fdto.setBoardnum(board.getBoardnum());
+					fdto.setOrgname(orgname);
+					fdto.setSystemname(systemname);
+					flag = fmapper.insertFile(fdto) == 1;
+					
+					//실제 파일 업로드
+					file.transferTo(new File(path));
+					//업로드 성공한 파일의 이름을 sysnames에 추가
+					sysnames.add(systemname);
+					
+					if(!flag) {
+						break;
+					}
+				}
+				//강제탈출
+				if(!flag){
+					//업로드했던 파일 삭제, 게시글 데이터 삭제, 파일 data 삭제, ...
+					//아까 추가했던 systemname들(업로드 성공한 파일의 이름)을 꺼내오면서
+					for(String systemname : sysnames){
+						//실제 파일이 존재한다면 삭제
+						File file = new File(saveFolder,systemname);
+						if(file.exists()) {
+							file.delete();
+						}
+						//DB에서도 삭제
+						fmapper.deleteFileBySystemname(systemname);
+					}
+					//bmapper.deleteBoard();
+				}
+			}
+			//지워져야 할 파일(기존에 있었던 파일들 중 수정된 파일)들의 이름 추출
+			String[] deleteNames = updateCnt.split("\\\\");
+			for(String systemname : deleteNames) {
+				File file = new File(saveFolder,systemname);
+				if(file.exists()) {
+					file.delete();
+				}
+				fmapper.deleteFileBySystemname(systemname);
+			}
+			return true;
+		}
 	}
 
 	@Override
 	public boolean increaseReadCount(long boardnum) {
-		// TODO Auto-generated method stub
-		return false;
+		BoardDTO board = bmapper.getBoardByNum(boardnum);
+		return bmapper.updateReadCount(boardnum,board.getReadcount()+1);
 	}
 
 	@Override

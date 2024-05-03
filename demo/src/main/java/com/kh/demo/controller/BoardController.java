@@ -22,6 +22,8 @@ import jakarta.servlet.http.HttpSession;
 
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 
 @Controller
@@ -55,14 +57,19 @@ public class BoardController {
 		}
 	}
 	
-	@GetMapping("get")
+	@GetMapping(value={"get", "modify"})
 	public String get(Criteria cri, long boardnum, HttpServletRequest req, HttpServletResponse resp, Model model) {
+		String requestURI = req.getRequestURI();
 		model.addAttribute("cri",cri);
 		HttpSession session = req.getSession();
 		BoardDTO board = service.getDetail(boardnum);
 		model.addAttribute("board",board);
 		model.addAttribute("files",service.getFiles(boardnum));
 		String loginUser = (String)session.getAttribute("loginUser");
+		
+		if(requestURI.contains("modify")) {
+			return "board/modify";
+		}
 		
 		if(!board.getUserid().equals(loginUser)) {
 			Cookie[] cookies = req.getCookies();
@@ -89,6 +96,16 @@ public class BoardController {
 			
 		}
 		return "board/get";
+	}
+	@PostMapping("modify")
+	public String modify(BoardDTO board, MultipartFile[] files, String updateCnt, Criteria cri, Model model) throws Exception {
+		System.out.println("Controller : "+updateCnt);
+		if(service.modify(board, files, updateCnt)) {
+			return "redirect:/board/get"+cri.getListLink()+"&boardnum="+board.getBoardnum();
+		}
+		else {
+			return "redirect:/board/get"+cri.getListLink()+"&boardnum="+board.getBoardnum();
+		}
 	}
 	
 }

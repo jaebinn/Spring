@@ -46,4 +46,18 @@
 	<select id="getBoardByNum">
 		select * from t_board where boardnum=#{boardnum}
 	</select>
+	
+	<update id="updateReadCount">
+		update t_board
+		set readcount = #{readcount}
+		where boardnum = #{boardnum}
+	</update>
+	<update id="updateBoard">
+		update t_board
+		set boardtitle=#{boardtitle}, boardcontents=#{boardcontents}, updatedate=now()
+		where boardnum=#{boardnum}
+	</update>
 </mapper>
+
+
+

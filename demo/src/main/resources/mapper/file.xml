@@ -19,6 +19,9 @@
 		select * from t_file where boardnum=#{boardnum}
 	</select>
 	
+	<delete id="deleteFileBySystemname">
+		delete from t_file where systemname=#{systemname}
+	</delete>
 </mapper>
 
 

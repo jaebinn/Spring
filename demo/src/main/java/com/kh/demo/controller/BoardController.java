@@ -57,11 +57,11 @@ public class BoardController {
 	
 	@GetMapping("get")
 	public String get(Criteria cri, long boardnum, HttpServletRequest req, HttpServletResponse resp, Model model) {
-		model.addAttribute("cri", cri);
+		model.addAttribute("cri",cri);
 		HttpSession session = req.getSession();
 		BoardDTO board = service.getDetail(boardnum);
-		model.addAttribute("board", board);
-		model.addAttribute("files", service.getFiles(boardnum));
+		model.addAttribute("board",board);
+		model.addAttribute("files",service.getFiles(boardnum));
 		String loginUser = (String)session.getAttribute("loginUser");
 		
 		if(!board.getUserid().equals(loginUser)) {
@@ -69,26 +69,28 @@ public class BoardController {
 			Cookie read_board = null;
 			if(cookies != null) {
 				for(Cookie cookie : cookies) {
-					//ex) 1번 게시글을 조회하고자 클릭했을 때에는 "read_board1" 쿠키를 찾
+					//ex) 1번 게시글을 조회하고자 클릭했을 때에는 "read_board1" 쿠키를 찾음
 					if(cookie.getName().equals("read_board"+boardnum)) {
 						read_board = cookie;
 						break;
 					}
 				}
 			}
-			//read_board가 null이라는 뜻으 위에서 크키를 찾았을 때 존재하지 않았다는 
-			//첫 조회거나 조한지 1시간이 지난 후
+			//read_board가 null이라는 뜻은 위에서 쿠키를 찾았을 때 존재하지 않았다는 뜻
+			//첫 조회거나 조회한지 1시간이 지난 후
 			if(read_board == null) {
 				service.increaseReadCount(boardnum);
-				//read_board1 이름의 쿠키(유효기간: 3600초)를 생성해서 클라이언트에 저장
+				//read_board1 이름의 쿠키(유효기간:3600초)를 생성해서 클라이언트에 저장
 				Cookie cookie = new Cookie("read_board"+boardnum, "r");
 				cookie.setMaxAge(3600);
 				resp.addCookie(cookie);
 			}
+			
+			
 		}
 		return "board/get";
-			
 	}
+	
 }
 
 

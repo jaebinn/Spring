@@ -23,7 +23,7 @@ public interface BoardService {
 	boolean increaseReadCount(long boardnum);
 	
 	boolean remove(long boardnum);
-	
+
 	List<FileDTO> getFiles(long boardnum);
 	
 }

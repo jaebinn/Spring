@@ -74,7 +74,7 @@
 				</div>
 				<div>
 					<h4>내 용</h4>
-					<textarea name="replycontents" placeholder="Contents"></textarea>
+					<textarea id="replycontents" name="replycontents" placeholder="Contents"></textarea>
 				</div>
 				<div>
 					<a href="#" class="btn finish">등록</a>
@@ -86,12 +86,108 @@
 		</div>
 	</div>
 </body>
-<script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="/js/reply.js"></script>
+<script th:inline="javascript">
 	window.setTimeout(function(){
 		document.querySelector("#wrap>div:nth-child(1)").style.display="none";
 	},1200)
 	const updateForm = document.updateForm;
+	const replyForm = $(".replyForm");
 	let flag = false;
+	let boardnum = /*[[${board.boardnum}]]*/'';
+	let loginUser = /*[[${session.loginUser}]]*/'';
+	const replies = $(".replies");
+	const page = $(".page");
+	
+	$(document).ready(function(){
+		showList(1);
+	})
+	$(".regist").on("click", function(e){
+		e.preventDefault();
+		replyForm.show();
+		$(this).hide();
+		$("#replycontents").focus();
+	})
+	$(".finish").on("click", function(e){
+		e.preventDefault();
+		//댓글 등록 수행
+		let replycontents = $("#replycontents").val();
+		if(replycontents == ""){
+			alert("댓글 내용을 입력하세요!");
+			$("#replycontents").focus();
+			return;
+		}
+		//백으로 요청
+		replyService.insert(
+			{boardnum:boardnum,replycontents:replycontents, userid:loginUser},
+			function(result){
+				//DOM
+				console.log(result);
+				alert(`${result.replynum}번 댓글 등록 성공!`);
+				showList(1);
+			}
+		)
+		
+		
+		$("#replycontents").val();
+		$(".regist").show();
+		replyForm.hide();
+				
+		
+	})
+	$(".cancel").on("click", function(e){
+		e.preventDefault();
+		//취소 수행
+		$("#replycontents").val("");
+		replyForm.hide();
+		
+		$(".regist").show();	
+	})
+	
+	function showList(pagenum){
+		replyService.selectAll(
+			{boardnum:boardnum, pagenum:pagenum||1},
+			function(replyCnt, list){
+				//LIST DOM
+				let str = "";
+				if(list == null || list.length == 0){
+					str += `<li class="no-reply">등록된 댓글이 없습니다.</li>`;
+					replies.html(str);
+					return;
+				}
+				for(let i=0;i<list.length;i++){
+					const reply = list[i];
+					str += `<li class="li${reply.replynum} row">
+	<div class="row">
+		<strong class="userid${reply.replynum}">${reply.userid}</strong>
+		<p class="reply${reply.replynum}">
+			${reply.replycontents}
+		</p>
+	</div>			
+	<div>
+		<strong>${reply.regdate}</strong>
+	</div>`;		
+				if(reply.userid == loginUser){
+					str += "<div>"
+					str += `<a href="${reply.replynum}" class="modify btn">수정</a>`
+					str += `<a href="${reply.replynum}" class="mfinish btn" style="display:none;">수정 완료</a>`
+					str += `<a href="${reply.replynum}" class="remove btn">삭제</a>`
+					str += "</div>"
+				}
+				str += "</li>";
+				}		
+				replies.html(str);		
+				
+				//DOM으로 생성된 버튼들 이벤트 달기
+				
+				//댓글 페이징 DOM 구현	
+			}
+		)
+	}
+	
+	
+	
 	function deleteReply(replynum){
 		updateForm.setAttribute("action","${cp}/reply/delete");
 		updateForm.replynum.value = replynum;

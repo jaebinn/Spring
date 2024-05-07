@@ -12,6 +12,7 @@ body{
 input{
     cursor:pointer;
 }
+ul, ol, li{ list-style: none; }
 table, tr, th, td{
     border-collapse: collapse;
     vertical-align: middle;
@@ -1003,6 +1004,7 @@ img.thumbnail{
 }
 .replies{
 	border-top:1px solid gray;
+	padding:0;
 	padding-top:30px;
 }
 .replies li.no-reply{
@@ -1010,8 +1012,30 @@ img.thumbnail{
 	font-size: 20px;
 	font-weight: bold;
 }
-
-
+.replies li{
+	width:1000px;
+}
+.replies li div:nth-child(1){
+	width: 80%;
+}
+.replies li div:nth-child(1) [class*='userid']{
+	width:20%;
+	text-align: center;
+	border-right: 1px solid #ccc;
+}
+.replies li div:nth-child(1) [class*='reply']{
+	width:80%;
+	padding-left: 10px;
+}
+.replies li div:nth-child(2), .replies li div:nth-child(3){
+	text-align: center;
+}
+.replies li div:nth-child(2){font-size: 14px; color:#999; }
+.replies li div:nth-child(3) .btn{
+	height:fit-content;
+	margin: 5px auto;
+	padding:5px 0;
+}
 
 
 

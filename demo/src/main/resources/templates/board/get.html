@@ -97,19 +97,20 @@
 	let flag = false;
 	let boardnum = /*[[${board.boardnum}]]*/'';
 	let loginUser = /*[[${session.loginUser}]]*/'';
-	const replies = $(".replies");
+	const replies = $(".replies")
 	const page = $(".page");
-	
+
 	$(document).ready(function(){
 		showList(1);
 	})
-	$(".regist").on("click", function(e){
+		
+	$(".regist").on("click",function(e){
 		e.preventDefault();
 		replyForm.show();
 		$(this).hide();
 		$("#replycontents").focus();
 	})
-	$(".finish").on("click", function(e){
+	$(".finish").on("click",function(e){
 		e.preventDefault();
 		//댓글 등록 수행
 		let replycontents = $("#replycontents").val();
@@ -120,7 +121,7 @@
 		}
 		//백으로 요청
 		replyService.insert(
-			{boardnum:boardnum,replycontents:replycontents, userid:loginUser},
+			{"replycontents":replycontents,"boardnum":boardnum,"userid":loginUser},
 			function(result){
 				//DOM
 				console.log(result);
@@ -129,20 +130,16 @@
 			}
 		)
 		
-		
-		$("#replycontents").val();
+		$("#replycontents").val("");
 		$(".regist").show();
 		replyForm.hide();
-				
-		
 	})
-	$(".cancel").on("click", function(e){
+	$(".cancel").on("click",function(e){
 		e.preventDefault();
 		//취소 수행
 		$("#replycontents").val("");
 		replyForm.hide();
-		
-		$(".regist").show();	
+		$(".regist").show();
 	})
 	
 	function showList(pagenum){
@@ -156,63 +153,102 @@
 					replies.html(str);
 					return;
 				}
+				
 				for(let i=0;i<list.length;i++){
 					const reply = list[i];
 					str += `<li class="li${reply.replynum} row">
 	<div class="row">
-		<strong class="userid${reply.replynum}">${reply.userid}</strong>
+		<strong class="userid${reply.userid}">${reply.userid}</strong>
 		<p class="reply${reply.replynum}">
 			${reply.replycontents}
 		</p>
-	</div>			
+	</div>
 	<div>
-		<strong>${reply.regdate}</strong>
-	</div>`;		
-				if(reply.userid == loginUser){
+		<strong>${displayTime(reply)}</strong>
+	</div>`;
 					str += "<div>"
-					str += `<a href="${reply.replynum}" class="modify btn">수정</a>`
-					str += `<a href="${reply.replynum}" class="mfinish btn" style="display:none;">수정 완료</a>`
-					str += `<a href="${reply.replynum}" class="remove btn">삭제</a>`
+					if(reply.userid == loginUser){
+						str += `<a href="${reply.replynum}" class="modify btn">수정</a>`
+						str += `<a href="${reply.replynum}" class="mfinish btn" style="display:none;">수정 완료</a>`
+						str += `<a href="${reply.replynum}" class="remove btn">삭제</a>`
+					}
 					str += "</div>"
+					str += "</li>"
 				}
-				str += "</li>";
-				}		
-				replies.html(str);		
+				replies.html(str);
 				
-				//DOM으로 생성된 버튼들 이벤트 달기
+				//DOM으로 생성된 버튼들에 이벤트 달기
 				
-				//댓글 페이징 DOM 구현	
+				//댓글 페이징 DOM 구현
+				showReplyPages(replyCnt, pagenum);
 			}
 		)
 	}
 	
-	
-	
-	function deleteReply(replynum){
-		updateForm.setAttribute("action","${cp}/reply/delete");
-		updateForm.replynum.value = replynum;
-		updateForm.submit();
-	}
-	function updateReply(i){
-		const start = document.getElementById("start"+i);
-		const end = document.getElementById("end"+i);
-		const reply = document.getElementById("reply"+i);
+	function showReplyPages(replyCnt, pagenum){
+		let endPage = Math.ceil(pagenum/5)*5;
+		let startPage = endPage - 4;
+		endPage = (endPage-1)*5 >= replyCnt ? Math.ceil(replyCnt/5) : endPage;
 		
-		if(!flag){
-			start.style.display = "none";
-			end.style.display = "inline-block";
-			reply.removeAttribute("readonly");
-			flag = true;
+		let prev = startPage != 1;
+		let next = endPage*5 < replyCnt
+		
+		let str = "";
+		if(prev){
+			str += `<a class="changePage page-btn" href="${startPage-1}">&lt;<a>`
+		}
+		for(let i=startPage;i<=endPage;i++){
+			if(i == pagenum){
+				str += `<span class="nowPage">${i}</span>` 
+			}
+			else{
+				str += `<a class="changePage page-btn" href="${i}">${i}</a>`
+			}
+		}
+		if(next){
+			str += `<a class="changePage page-btn" href="${endPage+1}">&gt;</a>`
+		}
+		
+		page.html(str);
+		
+		$(".changePage").on("click",function(e){
+			e.preventDefault();
+			let target = $(this).attr("href");
+			target = parseInt(target);
+			showList(target);
+			window.setTimeout(function(){
+				window.scrollTo(0,document.body.scrollHeight);
+			},10)
+		})
+	}
+	
+	function displayTime(reply){
+		const regdate = reply.regdate;
+		const updatedate = reply.updatedate;
+		
+		const now = new Date();
+		const check = regdate != updatedate;
+		
+		const dateObj = new Date(check ? updatedate : regdate);
+		
+		let gap = now.getTime() - dateObj.getTime();
+		
+		let str = "";
+		if(gap < 1000*60*60*24){
+			let hh = dateObj.getHours();
+			let mi = dateObj.getMinutes();
+			let ss = dateObj.getSeconds();
+			
+			str = (hh>9?'':'0')+hh+":"+(mi>9?'':'0')+mi+":"+(ss>9?'':'0')+ss;
 		}
 		else{
-			alert("수정중인 댓글이 있습니다!");
+			let yy = dateObj.getFullYear();
+			let mm = dateObj.getMonth()+1;
+			let dd = dateObj.getDate();
+			
+			str = yy+"/"+(mm>9?'':'0')+mm+"/"+(dd>9?'':'0')+dd;
 		}
-	}
-	function updateReplyOk(i,replynum){
-		updateForm.setAttribute("action","${cp}/reply/update");
-		updateForm.replynum.value = replynum;
-		updateForm.i.value = i;
-		updateForm.submit();
+		return (check ? "(수정됨) " : "")+str;
 	}
 </script>
 </html>

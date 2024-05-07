@@ -10,6 +10,4 @@ import lombok.Data;
 public class ReplyPageDTO {
 	private long replyCnt;
 	private List<ReplyDTO> list;
-	
-	
 }

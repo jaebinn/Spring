@@ -15,5 +15,4 @@ public interface ReplyService {
 	
 	boolean remove(long replynum);
 
-	
 }

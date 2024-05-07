@@ -10,6 +10,4 @@ public class ReplyDTO {
 	private String updatedate;
 	private long boardnum;
 	private String userid;
-	
-	
 }

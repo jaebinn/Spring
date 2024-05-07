@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.RequestBody;
 
+
+
 @Controller
 @RequestMapping("/board/*")
 public class BoardController {
@@ -106,6 +108,18 @@ public class BoardController {
 		}
 	}
 	
+	@GetMapping("remove")
+	public String remove(Criteria cri, long boardnum,HttpServletRequest req) {
+		String loginUser = (String)req.getSession().getAttribute("loginUser");
+		BoardDTO board = service.getDetail(boardnum);
+		if(loginUser.equals(board.getUserid())) {
+			if(service.remove(boardnum)) {
+				return "redirect:/board/list"+cri.getListLink();
+			}
+		}
+		return "redirect:/board/get"+cri.getListLink()+"&boardnum="+boardnum;
+		
+	}
 }
 
 

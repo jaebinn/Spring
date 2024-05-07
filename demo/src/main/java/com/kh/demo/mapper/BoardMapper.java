@@ -21,5 +21,7 @@ public interface BoardMapper {
 	int updateBoard(BoardDTO board);
 
 	//@Param : MyBatis에 일반 변수로 두 개 이상을 넘길 때, XML쪽에서 사용하기 위해 @Param 어노테이션을 이용해서 name을 달아준다.
-	boolean updateReadCount(@Param("boardnum")long boardnum,@Param("readcount") int readcount);
+	int updateReadCount(@Param("boardnum")long boardnum,@Param("readcount") int readcount);
+	
+	int deleteBoard(long boardnum);
 }

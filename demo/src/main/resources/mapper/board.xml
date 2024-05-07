@@ -57,6 +57,9 @@
 		set boardtitle=#{boardtitle}, boardcontents=#{boardcontents}, updatedate=now()
 		where boardnum=#{boardnum}
 	</update>
+	<delete id="deleteBoard">
+		delete from t_board where boardnum=#{boardnum}
+	</delete>
 </mapper>
 
 

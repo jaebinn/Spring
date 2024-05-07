@@ -17,6 +17,7 @@ import com.kh.demo.domain.dto.Criteria;
 import com.kh.demo.domain.dto.FileDTO;
 import com.kh.demo.mapper.BoardMapper;
 import com.kh.demo.mapper.FileMapper;
+import com.kh.demo.mapper.ReplyMapper;
 
 @Service
 public class BoardServiceImpl implements BoardService{
@@ -28,6 +29,8 @@ public class BoardServiceImpl implements BoardService{
 	private BoardMapper bmapper;
 	@Autowired
 	private FileMapper fmapper;
+	@Autowired
+	private ReplyMapper rmapper;
 	
 	@Override
 	public boolean regist(BoardDTO board, MultipartFile[] files) throws Exception {
@@ -208,13 +211,31 @@ public class BoardServiceImpl implements BoardService{
 	@Override
 	public boolean increaseReadCount(long boardnum) {
 		BoardDTO board = bmapper.getBoardByNum(boardnum);
-		return bmapper.updateReadCount(boardnum,board.getReadcount()+1);
+		return bmapper.updateReadCount(boardnum,board.getReadcount()+1) == 1;
 	}
 
 	@Override
 	public boolean remove(long boardnum) {
-		// TODO Auto-generated method stub
+		if(bmapper.deleteBoard(boardnum) == 1) {
+			List<FileDTO> files = fmapper.getFiles(boardnum);
+			for(FileDTO fdto : files) {
+				File file = new File(saveFolder,fdto.getSystemname());
+				if(file.exists()) {
+					file.delete();
+					fmapper.deleteFileBySystemname(fdto.getSystemname());
+				}
+			}
+			
+			rmapper.deleteRepliesByBoardnum(boardnum);
+			return true;
+		}
 		return false;
 	}
 
 }
+
+
+
+
+
+

@@ -2,23 +2,42 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+	ReplyDTO getDetail(long replynum);
+	long getTotal(long boardnum);
+	
+	
+	int updateReply(ReplyDTO reply);
+	
+	int deleteReply(long replynum);
+-->
 <mapper namespace="com.kh.demo.mapper.ReplyMapper">
 	<insert id="insertReply">
-		insert into t_reply(replycontents, boardnum, userid) values(#{replycontents},#{boardnum},#{userid})
+		insert into t_reply (replycontents,boardnum,userid)
+		values(#{replycontents},#{boardnum},#{userid})
 	</insert>
 	
 	<select id="getLastReply">
-		select * from t_reply where userid=#{userid} order by replynum desc limit 1;
+		select * from t_reply where userid=#{userid} order by replynum desc limit 1
 	</select>
-	
 	<select id="getList">
-		select * from t_reply where boardnum=#{boardnum} limit #{cri.startrow}, #{cri.amount}
+		select * from t_reply where boardnum=#{boardnum} limit #{cri.startrow},#{cri.amount}
+	</select>
+	<select id="getTotal">
+		select count(*) from t_reply where boardnum=#{boardnum}
 	</select>
 	
-	<select id="getTotal">
-		select count(*) from t_reply where boardnum = #{boardnum}
-	</select>
+	<delete id="deleteRepliesByBoardnum">
+		delete from t_reply where boardnum=#{boardnum}
+	</delete>
 </mapper>
+
+
+
+
+
+
+
 
 
 

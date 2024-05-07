@@ -12,6 +12,7 @@ import com.kh.demo.mapper.ReplyMapper;
 public class ReplyServiceImpl implements ReplyService{
 	@Autowired
 	private ReplyMapper rmapper;
+
 	@Override
 	public ReplyDTO regist(ReplyDTO reply) {
 		//등록 데이터 로직
@@ -19,7 +20,6 @@ public class ReplyServiceImpl implements ReplyService{
 			//검색 데이터 로직
 			return rmapper.getLastReply(reply.getUserid());
 		}
-		
 		return null;
 	}
 
@@ -33,6 +33,7 @@ public class ReplyServiceImpl implements ReplyService{
 	public ReplyPageDTO getList(Criteria cri, long boardnum) {
 		return new ReplyPageDTO(rmapper.getTotal(boardnum), rmapper.getList(cri, boardnum));
 	}
+
 	@Override
 	public boolean modify(ReplyDTO reply) {
 		// TODO Auto-generated method stub
@@ -44,5 +45,5 @@ public class ReplyServiceImpl implements ReplyService{
 		// TODO Auto-generated method stub
 		return false;
 	}
-
+	
 }

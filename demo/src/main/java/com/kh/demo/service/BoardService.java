@@ -17,7 +17,7 @@ public interface BoardService {
 	long getTotal(Criteria cri);
 	long getLastNum(String userid);
 	ArrayList<String> getHotBoardList(List<BoardDTO> list);
-	ArrayList<Integer> getReplyCntList(List<BoardDTO> list);
+	ArrayList<Long> getReplyCntList(List<BoardDTO> list);
 	
 	boolean modify(BoardDTO board, MultipartFile[] files, String updateCnt) throws Exception;
 	boolean increaseReadCount(long boardnum);

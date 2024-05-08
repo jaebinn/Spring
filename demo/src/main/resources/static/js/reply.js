@@ -25,6 +25,29 @@ const replyService = {
 				callback(data.replyCnt, data.list);
 			}
 		)
+	},
+	delete:function(replynum,callback){
+		$.ajax({
+			type:"DELETE",
+			url:`/reply/${replynum}`,
+			success:function(result){
+				callback(result);
+			},
+			error:function(result){
+				error(result);
+			}
+		})
+	},
+	update:function(data,callback){
+		$.ajax({
+			type:"PUT",
+			url:"/reply/"+data.replynum,
+			data:JSON.stringify(data),
+			contentType:"application/json;charset=utf-8",
+			success:function(result){
+				callback(result);
+			}
+		})
 	}
 	
 }

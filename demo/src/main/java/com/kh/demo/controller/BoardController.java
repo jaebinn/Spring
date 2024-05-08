@@ -92,8 +92,6 @@ public class BoardController {
 				cookie.setMaxAge(3600);
 				resp.addCookie(cookie);
 			}
-			
-			
 		}
 		return "board/get";
 	}

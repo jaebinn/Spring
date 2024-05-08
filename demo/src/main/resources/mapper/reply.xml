@@ -26,10 +26,25 @@
 	<select id="getTotal">
 		select count(*) from t_reply where boardnum=#{boardnum}
 	</select>
+	<select id="getRecentReplyCnt">
+		<![CDATA[ 
+			select count(*) from t_reply where boardnum=#{boardnum} and timestampdiff(HOUR,regdate,now())<1
+		]]>
+	</select>
+	<update id="updateReply">
+		update t_reply
+		set replycontents=#{replycontents}, updatedate=now()
+		where replynum=#{replynum}
+	</update>
 	
 	<delete id="deleteRepliesByBoardnum">
 		delete from t_reply where boardnum=#{boardnum}
 	</delete>
+	
+	<delete id="deleteReply">
+		delete from t_reply where replynum=#{replynum}
+	</delete>
+	
 </mapper>
 
 

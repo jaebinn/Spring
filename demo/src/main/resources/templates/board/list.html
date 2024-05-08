@@ -103,7 +103,7 @@
 		</div>
 		<div class="chat-input">
 			<form>
-				<input type="hidden" id="userid" name="userid" value="${loginUser}">
+				<input type="hidden" id="userid" name="userid" th:value="${session.loginUser}">
 				<span class="echo-receiver"></span> <input type="text"
 					id="chat-input" placeholder="Send a message..."
 					onkeyup="sendEcho();" />
@@ -185,7 +185,7 @@
 	$("#chat-circle").click(function(){
 		$("#chat-circle").toggle('scale');
 		$(".chat-box").toggle('scale');
-		socket = new WebSocket('ws://localhost:9090/chat/'+$('#userid').val());
+		socket = new WebSocket('ws://localhost:8080/chat/'+$('#userid').val());
 		
 		//소켓 연결에 오류가 발생했을 때 수행할 이벤트
 		socket.onerror = function(e){}
@@ -252,7 +252,7 @@
 			// /banana 하이
 			let content = message.substring(idx+4);
 			
-			// /apple
+			// /banana
 			let temp = content.split(" ")[0];
 			//띄어쓰기로 split된 것 중 맨 앞의 것의 첫 글자가 "/" 라면 귓속말이라는 뜻 
 			if(temp.substring(0,1) == "/"){
@@ -331,7 +331,7 @@
 					}
 				}
 			}
-			xhr.open("GET","${cp}/user/checkid?userid="+userid);
+			xhr.open("GET","/user/checkId?userid="+userid);
 			xhr.send();
 		}
 	}
@@ -339,7 +339,7 @@
 	//채팅 로그 생성하는 함수
 	//msg : 실제 내용이 될 텍스트 / type : 'self'(내가 보낸 모습으로),'user'(남이 보낸 모습으로)
 	function generate_message(msg, type, sender){
-		console.log(msg);
+		console.log(`${type}으로 ${sender}가 보낸 ${msg}`);
 		INDEX++;
 		var str = "";
 		let receiver = "";
@@ -347,9 +347,9 @@
 		// /banana 
 		if(echoFlag != ""){
 			let temp = msg.split(" ")[0];
-			console.log(temp)
 			receiver = echoFlag.substring(1).trim();
-			content = msg.substring(temp.length+1) 
+			content = msg.substring(temp.length+1)
+			console.log("처리 후 :",receiver,content);
 		}
 		else{
 			content = msg;
@@ -357,7 +357,7 @@
 		//										만약 내가 귓속말을 보낸 상태라면 self와 echo 클래스 둘 다 달려야 함
 		str += "<div id='cm-msg-"+INDEX+"' class=\"chat-msg "+type+(echoFlag!=""?" echo":"")+"\">";
 		str += "<span class=\"msg-avatar\">";
-		str += "<img src=\"${cp}/images/chat_bg2.jpeg\">";
+		str += "<img src=\"/images/chat_bg2.jpeg\">";
 		str += "<\/span>";
 		str += "<div class=\"cm-msg-text\">";
 		str += content;

@@ -36,14 +36,11 @@ public class ReplyServiceImpl implements ReplyService{
 
 	@Override
 	public boolean modify(ReplyDTO reply) {
-		// TODO Auto-generated method stub
-		return false;
+		return rmapper.updateReply(reply) == 1;
 	}
 
 	@Override
 	public boolean remove(long replynum) {
-		// TODO Auto-generated method stub
-		return false;
+		return rmapper.deleteReply(replynum) == 1;
 	}
-	
 }

@@ -115,16 +115,21 @@ public class BoardServiceImpl implements BoardService{
 	public ArrayList<String> getHotBoardList(List<BoardDTO> list) {
 		ArrayList<String> hotList = new ArrayList<>();
 		for(BoardDTO board : list) {
-			hotList.add("O");
+			if(rmapper.getRecentReplyCnt(board.getBoardnum()) == 1) {
+				hotList.add("O");
+			}
+			else {
+				hotList.add("X");
+			}
 		}
 		return hotList;
 	}
 
 	@Override
-	public ArrayList<Integer> getReplyCntList(List<BoardDTO> list) {
-		ArrayList<Integer> replyCntList = new ArrayList<>();
+	public ArrayList<Long> getReplyCntList(List<BoardDTO> list) {
+		ArrayList<Long> replyCntList = new ArrayList<>();
 		for(BoardDTO board : list) {
-			replyCntList.add(0);
+			replyCntList.add(rmapper.getTotal(board.getBoardnum()));
 		}
 		return replyCntList;
 	}

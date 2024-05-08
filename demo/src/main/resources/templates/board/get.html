@@ -99,6 +99,7 @@
 	let loginUser = /*[[${session.loginUser}]]*/'';
 	const replies = $(".replies")
 	const page = $(".page");
+	let nowPage = 1;
 
 	$(document).ready(function(){
 		showList(1);
@@ -149,9 +150,17 @@
 				//LIST DOM
 				let str = "";
 				if(list == null || list.length == 0){
-					str += `<li class="no-reply">등록된 댓글이 없습니다.</li>`;
-					replies.html(str);
-					return;
+					//실제로 댓글이 하나도 없을 때
+					if(pagenum == 1){
+						str += `<li class="no-reply">등록된 댓글이 없습니다.</li>`;
+						replies.html(str);
+						return;
+					}
+					//삭제를 통해서 현재 페이지의 댓글이 모두 삭제됐을 때
+					else{
+						showList(pagenum-1);
+						return;
+					}
 				}
 				
 				for(let i=0;i<list.length;i++){
@@ -178,9 +187,65 @@
 				replies.html(str);
 				
 				//DOM으로 생성된 버튼들에 이벤트 달기
+				$(".remove").on("click",deleteReply);
+				$(".modify").on("click",modifyReply);
+				$(".mfinish").on("click",modifyReplyOk);
 				
 				//댓글 페이징 DOM 구현
 				showReplyPages(replyCnt, pagenum);
+			}
+		)
+	}
+	
+	function deleteReply(e){
+		e.preventDefault();
+		let replynum = e.target.getAttribute("href");
+		replyService.delete(
+			replynum,
+			function(result){
+				alert(`${replynum}번 댓글 삭제 완료!`)
+				showList(nowPage)
+			},
+			function(result){
+				alert("댓글 삭제 실패!")
+			}
+		)
+	}
+	let replyFlag = false;
+	function modifyReply(e){
+		e.preventDefault();
+		if(!replyFlag){
+			replyFlag = true;
+			let replynum = e.target.getAttribute("href");
+			//수정해야 할 댓글의 <p> 태그 ex) <p>test</p>
+			const replyTag = $(".reply"+replynum);
+			//ex) <p><textarea class='1 mdf'>test</textarea></p>
+			replyTag.html(`<textarea class='${replynum} mdf'>${replyTag.text().trim()}</textarea>`);
+			$(this).hide();
+			$(this).next().show();
+			$("."+replynum).focus();
+		}
+		else{
+			alert("수정중인 댓글이 있습니다!");
+		}
+	}
+	function modifyReplyOk(e){
+		e.preventDefault();
+		replyFlag = false;
+		
+		let replynum = $(this).attr("href");
+		let replycontents = $("."+replynum).val();
+		
+		if(replycontents == ""){
+			alert("수정할 댓글 내용을 입력하세요!");
+			$("."+replynum).focus();
+			return;
+		}
+		replyService.update(
+			{replynum:replynum, replycontents:replycontents, boardnum:boardnum, userid:loginUser},
+			function(result){
+				alert(`${replynum}번 댓글 수정 완료!`);
+				showList(nowPage);
 			}
 		)
 	}
@@ -215,6 +280,7 @@
 			e.preventDefault();
 			let target = $(this).attr("href");
 			target = parseInt(target);
+			nowPage = target;
 			showList(target);
 			window.setTimeout(function(){
 				window.scrollTo(0,document.body.scrollHeight);

@@ -22,4 +22,6 @@ public interface ReplyMapper {
 	int deleteReply(long replynum);
 
 	int deleteRepliesByBoardnum(long boardnum);
+
+	int getRecentReplyCnt(long boardnum);
 }
